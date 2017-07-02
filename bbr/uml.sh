@@ -4,9 +4,6 @@ export PATH
 #=================================================================#
 #   System Required:  CentOS 6,7, Debian, Ubuntu                  #
 #   Description: One click Install UML for bbr+ssr                #
-#   Author: 91yun <https://twitter.com/91yun>                     #
-#   Thanks: @allient                                              #
-#   Intro:  https://www.91yun.org/archives/2079                   #
 #=================================================================#
 
 
