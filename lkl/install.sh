@@ -4,9 +4,9 @@ export PATH
 #=================================================================#
 #   System Required:  CentOS ubuntu Debian                                    #
 #   Description: One click Install lkl                #
-#   Author: 91yun <https://twitter.com/91yun>                     #
+#   Author: 91yun <https://www.wn789.com>                     #
 #   Thanks: @allient neko                               #
-#   Intro:  https://www.91yun.org                                 #
+#   Intro:  https://www.wn789.com                                    #
 #=================================================================#
 
 if [[ $EUID -ne 0 ]]; then
@@ -98,7 +98,6 @@ mkdir /root/lkl
 cd /root/lkl
 cat > /root/lkl/haproxy.cfg<<-EOF
 global
-
 defaults
 log global
 mode tcp
@@ -106,17 +105,14 @@ option dontlognull
 timeout connect 5000
 timeout client 50000
 timeout server 50000
-
 frontend proxy-in
 bind *:9000-9999
 default_backend proxy-out
-
 backend proxy-out
 server server1 10.0.0.1 maxconn 20480
-
 EOF
 	
-wget --no-check-certificate http://soft.91yun.org/uml/lkl/liblkl-hijack.so
+wget --no-check-certificate http://gongju.wn789.com/liblkl-hijack.so
 
 cat > /root/lkl/lkl.sh<<-EOF
 LD_PRELOAD=/root/lkl/liblkl-hijack.so LKL_HIJACK_NET_QDISC="root|fq" LKL_HIJACK_SYSCTL="net.ipv4.tcp_congestion_control=bbr;net.ipv4.tcp_wmem=4096 16384 30000000" LKL_HIJACK_OFFLOAD="0x9983" LKL_HIJACK_NET_IFTYPE=tap LKL_HIJACK_NET_IFPARAMS=lkl-tap LKL_HIJACK_NET_IP=10.0.0.2 LKL_HIJACK_NET_NETMASK_LEN=24 LKL_HIJACK_NET_GATEWAY=10.0.0.1 haproxy -f /root/lkl/haproxy.cfg
@@ -132,16 +128,13 @@ sysctl -w net.ipv4.ip_forward=1
 iptables -P FORWARD ACCEPT 
 iptables -t nat -A POSTROUTING -o venet0 -j MASQUERADE
 iptables -t nat -A PREROUTING -i venet0 -p tcp --dport 9000:9999 -j DNAT --to-destination 10.0.0.2
-
 nohup /root/lkl/lkl.sh &
-
 p=\`ping 10.0.0.2 -c 3 | grep ttl\`
 if [ \$? -ne 0 ]; then
 	echo "success "\$(date '+%Y-%m-%d %H:%M:%S') > /root/lkl/log.log
 else
 	echo "fail "\$(date '+%Y-%m-%d %H:%M:%S') > /root/lkl/log.log
 fi
-
 EOF
 
 
